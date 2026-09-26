@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ReUse Brasil — marketplace de alimentos excedentes</title>
+<meta name="description" content="Encontre alimentos excedentes de empresas próximas a você por preços especiais e ajude a reduzir o desperdício.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🥐</text></svg>">
+<style>
+:root{
+  --creme:#F7F5E9; --creme-fundo:#EFEDDC; --superficie:#FFFDF3;
+  --verde-escuro:#1E4A2B; --verde:#3F7F3A; --oliva:#8CA944;
+  --tinta:#22301F; --tinta-suave:#4C5B49; --linha:#D9D6BE; --destaque:#E3672F; --ouro:#C9952B; --vermelho:#C4432B;
+  --radius:16px;
+  box-sizing:border-box;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--creme);color:var(--tinta);font-family:"Nunito",system-ui,-apple-system,sans-serif;font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+img{max-width:100%;display:block}
+h1,h2,h3,h4{font-family:"Outfit",system-ui,sans-serif;margin:0;line-height:1.15;color:var(--verde-escuro);letter-spacing:-.015em}
+h1{font-size:clamp(1.8rem,4.6vw,2.8rem);font-weight:700}
+h2{font-size:clamp(1.4rem,3.2vw,2rem);font-weight:700}
+h3{font-size:1.1rem;font-weight:700}
+p{margin:0 0 .85rem}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit}
+:focus-visible{outline:3px solid var(--destaque);outline-offset:2px;border-radius:8px}
+.wrap{width:min(1180px,100% - 2rem);margin-inline:auto}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.pill{font-family:"Outfit",sans-serif;font-weight:700;font-size:.72rem;padding:.22rem .65rem;border-radius:999px;display:inline-block}
+.pill--verde{background:var(--verde);color:#fff}
+.pill--destaque{background:var(--destaque);color:#fff}
+.pill--oliva{background:var(--oliva);color:#152109}
+.pill--cinza{background:var(--creme-fundo);color:var(--tinta-suave);border:1px solid var(--linha)}
+.estrelas{color:var(--ouro);font-weight:700;font-size:.9rem}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.4rem;font-family:"Outfit",sans-serif;font-weight:700;padding:.72rem 1.25rem;border-radius:999px;border:2px solid var(--verde-escuro);background:var(--verde-escuro);color:var(--creme);cursor:pointer;text-decoration:none;text-align:center;transition:transform .12s ease,background .15s ease}
+.btn:hover{transform:translateY(-1px)}
+.btn--vazado{background:transparent;color:var(--verde-escuro)}
+.btn--vazado:hover{background:var(--verde-escuro);color:var(--creme)}
+.btn--peq{padding:.48rem .95rem;font-size:.86rem;border-width:2px}
+.btn--bloco{width:100%}
+.btn[disabled]{opacity:.5;cursor:not-allowed;transform:none}
+.btn--destaque{background:var(--destaque);border-color:var(--destaque)}
+.icone-botao{background:none;border:none;font-size:1.2rem;cursor:pointer;color:var(--tinta-suave);position:relative;padding:.3rem}
+.icone-botao:hover{color:var(--verde-escuro)}
+.badge-contagem{position:absolute;top:-2px;right:-4px;background:var(--destaque);color:#fff;font-size:.62rem;font-weight:700;border-radius:999px;min-width:16px;height:16px;display:grid;place-items:center;padding:0 3px}
+.coracao{background:none;border:none;cursor:pointer;font-size:1.15rem;line-height:1;padding:0}
+
+/* topo */
+.nav{position:sticky;top:0;z-index:80;background:color-mix(in srgb,var(--creme) 93%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--linha)}
+.nav__in{display:flex;align-items:center;gap:1.1rem;min-height:68px;flex-wrap:wrap}
+.nav__marca{display:flex;align-items:center;gap:.55rem;font-family:"Outfit",sans-serif;font-weight:800;font-size:1.15rem;color:var(--verde-escuro)}
+.nav__marca img{height:34px;width:auto;border-radius:8px;background:#F7F5E9}
+.nav__links{display:flex;gap:1.3rem;flex-wrap:wrap;flex:1}
+.nav__links a{font-family:"Outfit",sans-serif;font-weight:600;font-size:.93rem;color:var(--tinta-suave);cursor:pointer}
+.nav__links a.ativo,.nav__links a:hover{color:var(--verde-escuro)}
+.nav__acoes{display:flex;align-items:center;gap:.5rem}
+@media(max-width:900px){
+  .nav__links{order:3;width:100%;justify-content:flex-start;flex-wrap:nowrap;gap:1.1rem;overflow-x:auto;overflow-y:hidden;padding-bottom:.5rem;-webkit-overflow-scrolling:touch;scrollbar-width:thin}
+  .nav__links a{flex:none;white-space:nowrap}
+}
+@media(max-width:480px){
+  .nav__in{min-height:58px;gap:.6rem}
+  .nav__marca{font-size:1.02rem}
+  .nav__marca img{height:28px}
+  .nav__acoes{gap:.15rem}
+  .icone-botao{font-size:1.05rem;padding:.25rem}
+  #btnEntrar{padding:.4rem .75rem;font-size:.8rem}
+}
+
+/* páginas */
+#app{min-height:60vh}
+.secao{padding:clamp(2.2rem,5vw,3.6rem) 0}
+.secao--calma{background:var(--creme-fundo);border-block:1px solid var(--linha)}
+.cab{display:flex;justify-content:space-between;align-items:flex-end;gap:1rem;flex-wrap:wrap;margin-bottom:1.4rem}
+.cab p{color:var(--tinta-suave);margin:.3rem 0 0;max-width:56ch;font-size:.97rem}
+.migalha{font-size:.85rem;color:var(--tinta-suave);margin-bottom:1rem}
+.migalha a{color:var(--verde-escuro);font-weight:700;cursor:pointer}
+
+/* hero */
+.hero{background:linear-gradient(160deg,var(--creme) 55%,var(--creme-fundo) 100%);padding:clamp(2.4rem,6vw,4rem) 0 clamp(2rem,4vw,3rem)}
+.hero__grid{display:grid;gap:2rem;align-items:center}
+@media(min-width:900px){.hero__grid{grid-template-columns:1.1fr .9fr;gap:3rem}}
+.hero h1{max-width:14ch}
+.hero p.lead{color:var(--tinta-suave);max-width:46ch;font-size:1.08rem;margin-top:.8rem}
+.hero__acoes{display:flex;gap:.7rem;flex-wrap:wrap;margin-top:1.3rem}
+.hero__foto{border-radius:24px;overflow:hidden;background:linear-gradient(135deg,var(--verde) 0%,var(--oliva) 100%);aspect-ratio:5/4;display:grid;place-items:center;font-size:5rem;box-shadow:0 30px 60px -35px rgba(30,74,43,.5)}
+.hero__foto img{width:100%;height:100%;object-fit:cover}
+.hero__nums{display:flex;gap:1.6rem;flex-wrap:wrap;margin-top:1.4rem}
+.hero__nums b{display:block;font-family:"Outfit",sans-serif;font-size:1.4rem;color:var(--verde)}
+.hero__nums span{font-size:.83rem;color:var(--tinta-suave)}
+
+/* busca */
+.buscagrande{background:var(--superficie);border:1px solid var(--linha);border-radius:22px;padding:1.5rem;margin-top:-2.4rem;position:relative;z-index:5;box-shadow:0 25px 55px -40px rgba(30,74,43,.45)}
+.buscagrande h3{margin-bottom:.9rem}
+.busca__linha{display:flex;gap:.7rem;flex-wrap:wrap}
+.busca__campo{flex:2 1 260px}
+.busca__filtros{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:.7rem;margin-top:.8rem}
+input,select,textarea{font:inherit;padding:.62rem .85rem;border-radius:12px;border:1px solid var(--linha);background:var(--superficie);color:var(--tinta);width:100%;min-width:0}
+label{display:block;font-family:"Outfit",sans-serif;font-weight:700;font-size:.82rem;color:var(--tinta-suave);margin-bottom:.28rem}
+
+/* cards empresa */
+.grade-empresas{display:grid;gap:1.15rem;grid-template-columns:1fr}
+.card-empresa{background:var(--superficie);border:1px solid var(--linha);border-radius:var(--radius);overflow:hidden;display:flex;flex-direction:column;transition:transform .15s ease,box-shadow .15s ease}
+.card-empresa:hover{transform:translateY(-3px);box-shadow:0 18px 34px -26px rgba(30,74,43,.35)}
+.card-empresa__capa{height:130px;display:grid;place-items:center;font-size:2.9rem;position:relative;overflow:hidden;background:var(--creme-fundo)}
+.card-empresa__capa img{width:100%;height:100%;object-fit:cover}
+.card-empresa__corpo{padding:1rem 1.1rem 1.15rem;flex:1;display:flex;flex-direction:column;gap:.35rem}
+.card-empresa__nome{font-family:"Outfit",sans-serif;font-weight:700;font-size:1.05rem;color:var(--verde-escuro)}
+.card-empresa__meta{font-size:.85rem;color:var(--tinta-suave);display:flex;flex-wrap:wrap;gap:.5rem;align-items:center}
+.card-empresa__oferta{font-size:.88rem;font-weight:700;color:var(--verde);margin-top:.2rem}
+.card-empresa__rodape{margin-top:auto;padding-top:.8rem;display:flex;gap:.6rem}
+.card-empresa__fav{position:absolute;top:.55rem;right:.55rem;background:rgba(255,255,255,.85);border-radius:50%;width:2rem;height:2rem;display:grid;place-items:center;z-index:2}
+
+/* cards produto */
+.grade-produtos{display:grid;gap:1.1rem;grid-template-columns:1fr}
+.card-produto{background:var(--superficie);border:1px solid var(--linha);border-radius:var(--radius);overflow:hidden;display:flex;flex-direction:column;cursor:pointer;transition:transform .15s ease,box-shadow .15s ease}
+.card-produto:hover{transform:translateY(-3px);box-shadow:0 18px 34px -26px rgba(30,74,43,.35)}
+.card-produto__capa{height:140px;display:grid;place-items:center;font-size:2.9rem;background:var(--creme-fundo);position:relative;overflow:hidden}
+.card-produto__capa img{width:100%;height:100%;object-fit:cover}
+@media(min-width:480px){
+  .grade-empresas,.grade-produtos{grid-template-columns:repeat(2,1fr)}
+}
+@media(min-width:900px){
+  .grade-empresas,.grade-produtos{grid-template-columns:repeat(3,1fr)}
+}
+@media(min-width:1200px){
+  .grade-empresas,.grade-produtos{grid-template-columns:repeat(4,1fr)}
+}
+.card-produto__tags{position:absolute;top:.5rem;left:.5rem;display:flex;gap:.35rem;flex-wrap:wrap}
+.card-produto__fav{position:absolute;top:.5rem;right:.5rem;background:rgba(255,255,255,.85);border-radius:50%;width:1.9rem;height:1.9rem;display:grid;place-items:center}
+.card-produto__corpo{padding:.95rem 1.05rem 1.1rem;flex:1;display:flex;flex-direction:column;gap:.3rem}
+.card-produto__loja{font-size:.79rem;color:var(--tinta-suave);font-weight:700}
+.card-produto__nome{font-family:"Outfit",sans-serif;font-weight:700;font-size:1.02rem;color:var(--verde-escuro)}
+.card-produto__desc{font-size:.83rem;color:var(--tinta-suave)}
+.card-produto__preco{display:flex;align-items:baseline;gap:.5rem;margin-top:.45rem}
+.card-produto__preco b{font-family:"Outfit",sans-serif;font-size:1.35rem;color:var(--verde)}
+.card-produto__preco s{font-size:.85rem;color:var(--tinta-suave)}
+.card-produto__rodape{margin-top:auto;padding-top:.75rem;display:flex;gap:.5rem}
+.card-produto__rodape .btn{flex:1}
+.vazio{border:1px dashed var(--linha);border-radius:var(--radius);padding:2rem;text-align:center;color:var(--tinta-suave)}
+
+/* última chance */
+.ultima-faixa{background:linear-gradient(120deg,#3A160D,#5C2413);color:#FBEDE3;border-radius:20px;padding:1.6rem;margin-bottom:1.8rem;display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap}
+.ultima-faixa h2{color:#FBEDE3}
+.ultima-faixa p{color:#E9C9B4;margin:.3rem 0 0}
+.grade-produtos.ultima .card-produto{border-color:#E3672F}
+.grade-produtos.ultima .card-produto__capa{background:#FBEDE3}
+
+/* filtros chips */
+.filtros{display:flex;gap:.7rem;flex-wrap:wrap;align-items:center;margin-bottom:1.3rem}
+.busca{flex:1 1 240px}
+.chips{display:flex;gap:.4rem;flex-wrap:wrap}
+.chip{font:inherit;font-size:.86rem;font-weight:700;border:1px solid var(--linha);background:var(--superficie);color:var(--tinta-suave);border-radius:999px;padding:.4rem .85rem;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--oliva);border-color:var(--oliva);color:#152109}
+
+/* perfil de empresa */
+.perfil-empresa{display:grid;gap:1.4rem;grid-template-columns:1fr;margin-bottom:1.6rem}
+@media(min-width:820px){.perfil-empresa{grid-template-columns:230px 1fr}}
+.perfil-empresa__capa{border-radius:var(--radius);height:180px;display:grid;place-items:center;font-size:5rem;overflow:hidden;position:relative}
+.perfil-empresa__capa img{width:100%;height:100%;object-fit:cover}
+.perfil-empresa__info{display:flex;flex-direction:column;gap:.4rem}
+.perfil-empresa__linha{display:flex;gap:1rem;flex-wrap:wrap;color:var(--tinta-suave);font-size:.92rem;align-items:center}
+.perfil-empresa__acoes{display:flex;gap:.6rem;margin-top:.6rem;flex-wrap:wrap}
+.info-horarios{display:flex;gap:1.6rem;flex-wrap:wrap;margin-top:.5rem;font-size:.9rem;color:var(--tinta-suave)}
+.info-horarios b{color:var(--verde-escuro)}
+
+/* produto detalhe */
+.detalhe{display:grid;gap:1.8rem}
+@media(min-width:880px){.detalhe{grid-template-columns:1fr 1fr;gap:2.6rem;align-items:start}}
+.detalhe__foto{border-radius:var(--radius);height:280px;display:grid;place-items:center;font-size:6.5rem;background:var(--creme-fundo);overflow:hidden;position:relative}
+.detalhe__foto img{width:100%;height:100%;object-fit:cover}
+@media(max-width:480px){.detalhe__foto{height:220px}}
+.detalhe__preco{display:flex;align-items:baseline;gap:.8rem;margin:.6rem 0}
+.detalhe__preco b{font-family:"Outfit",sans-serif;font-size:2.1rem;color:var(--verde)}
+.detalhe__preco s{font-size:1rem;color:var(--tinta-suave)}
+.linha-info{display:flex;gap:.6rem;padding:.6rem 0;border-bottom:1px solid var(--linha);font-size:.94rem}
+.linha-info b{color:var(--verde-escuro);min-width:9rem;flex:none}
+.linha-info span{color:var(--tinta-suave)}
+.confirmacao{background:var(--creme-fundo);border:1px solid var(--oliva);border-radius:14px;padding:1.1rem;margin-top:1rem}
+.confirmacao .codigo{font-family:"Outfit",sans-serif;font-weight:800;letter-spacing:.15em;font-size:1.3rem;color:var(--verde-escuro)}
+
+/* cartão genérico */
+.cartao{background:var(--superficie);border:1px solid var(--linha);border-radius:var(--radius);padding:1.4rem}
+.campo{margin-bottom:.85rem}
+.dupla{display:grid;grid-template-columns:1fr 1fr;gap:.8rem}
+@media(max-width:640px){.dupla{grid-template-columns:1fr}}
+.dica{font-size:.82rem;color:var(--tinta-suave);margin:.3rem 0 0}
+.aviso{margin-top:.8rem;font-weight:700;color:var(--verde);min-height:1.3em;font-size:.92rem}
+
+/* listas (reservas/favoritos/painel) */
+.lista{display:grid;gap:.7rem}
+.item{display:flex;gap:.9rem;align-items:center;background:var(--superficie);border:1px solid var(--linha);border-radius:14px;padding:.85rem 1rem;flex-wrap:wrap}
+.item__icone{font-size:1.6rem}
+.item__txt{flex:1;min-width:180px}
+.item__txt b{font-family:"Outfit",sans-serif;color:var(--verde-escuro);display:block}
+.item__txt span{font-size:.84rem;color:var(--tinta-suave)}
+.linkinho{background:none;border:none;font:inherit;font-size:.84rem;font-weight:700;color:var(--destaque);cursor:pointer}
+.codigo{font-family:"Outfit",sans-serif;font-weight:800;letter-spacing:.1em;color:var(--verde-escuro);background:var(--creme-fundo);border-radius:9px;padding:.25rem .6rem;display:inline-block}
+.status{font-family:"Outfit",sans-serif;font-weight:700;font-size:.78rem;padding:.2rem .6rem;border-radius:999px}
+.status--reservado{background:var(--oliva);color:#152109}
+.status--retirado{background:var(--verde-escuro);color:var(--creme)}
+.status--cancelado{background:var(--linha);color:var(--tinta-suave)}
+.abas-mini{display:flex;gap:.5rem;margin-bottom:1.2rem}
+.abas-mini button{font:inherit;font-family:"Outfit",sans-serif;font-weight:700;font-size:.9rem;padding:.5rem 1rem;border-radius:999px;border:1px solid var(--linha);background:var(--superficie);color:var(--tinta-suave);cursor:pointer}
+.abas-mini button[aria-selected="true"]{background:var(--verde-escuro);color:var(--creme);border-color:var(--verde-escuro)}
+
+/* números impacto */
+.numeros{display:grid;gap:1px;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));background:var(--linha);border:1px solid var(--linha);border-radius:var(--radius);overflow:hidden}
+.numero{background:var(--superficie);padding:1.2rem}
+.numero b{display:block;font-family:"Outfit",sans-serif;font-size:1.75rem;color:var(--verde);line-height:1.05}
+.numero span{font-size:.85rem;color:var(--tinta-suave)}
+.grade{display:grid;gap:1.1rem;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));margin-top:1.6rem}
+.grade ul{margin:.4rem 0 0;padding-left:1.1rem;color:var(--tinta-suave);font-size:.94rem}
+
+/* painel empresa */
+.painel-grid{display:grid;gap:1.4rem}
+@media(min-width:900px){.painel-grid{grid-template-columns:360px 1fr;gap:2.2rem;align-items:start}}
+
+/* modal */
+dialog{border:none;border-radius:var(--radius);padding:0;max-width:min(440px,92vw);background:var(--superficie);color:var(--tinta)}
+dialog::backdrop{background:rgba(15,28,15,.55)}
+.modal{padding:1.6rem}
+.modal p{color:var(--tinta-suave);font-size:.95rem}
+
+/* contato/chat com a loja */
+#modalContato{max-width:min(480px,92vw)}
+.modal__cab{display:flex;align-items:flex-start;justify-content:space-between;gap:.8rem;margin-bottom:.2rem}
+.modal__fechar{background:none;border:none;font-size:1.3rem;line-height:1;cursor:pointer;color:var(--tinta-suave);padding:.2rem .3rem;border-radius:8px}
+.modal__fechar:hover{color:var(--verde-escuro);background:var(--creme-fundo)}
+#contatoLojaTag{color:var(--verde-escuro);font-weight:700}
+.campo textarea{width:100%;font:inherit;font-size:.95rem;padding:.6rem .75rem;border-radius:10px;border:1px solid var(--linha);background:var(--superficie);color:var(--tinta);resize:vertical;min-height:5.5rem}
+.campo textarea:focus-visible{outline:3px solid var(--destaque);outline-offset:1px}
+.campo-mel{position:absolute;left:-9999px;top:-9999px}
+.aviso--ok{color:var(--verde)}
+.aviso--erro{color:var(--vermelho)}
+#btnEnviarContato[aria-busy="true"]{opacity:.7;cursor:progress}
+
+/* menu de busca dropdown pesquisa rápida */
+.busca-rapida{position:absolute;top:100%;right:1rem;margin-top:.5rem;background:var(--superficie);border:1px solid var(--linha);border-radius:14px;padding:.8rem;box-shadow:0 20px 40px -25px rgba(0,0,0,.3);width:min(320px,90vw)}
+
+/* rodapé */
+.rodape{background:var(--verde-escuro);color:var(--creme);padding:3rem 0 2.2rem}
+.rodape h2,.rodape h3{color:var(--creme)}
+.rodape p{color:color-mix(in srgb,var(--creme) 84%,transparent)}
+.rodape__grid{display:grid;gap:1.6rem;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));margin-top:1.6rem}
+.rodape__grid a{display:block;color:color-mix(in srgb,var(--creme) 84%,transparent);font-size:.92rem;margin-bottom:.4rem;cursor:pointer}
+.rodape__base{margin-top:2rem;padding-top:1.2rem;border-top:1px solid color-mix(in srgb,var(--creme) 25%,transparent);font-size:.85rem;display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;color:color-mix(in srgb,var(--creme) 78%,transparent)}
+
+/* ajustes finos para telas pequenas */
+@media(max-width:600px){
+  body{font-size:15px}
+  .wrap{width:min(1180px,100% - 1.4rem)}
+  .secao{padding:1.7rem 0}
+  .buscagrande{padding:1.1rem;margin-top:-1.6rem;border-radius:16px}
+  .hero{padding-top:1.8rem}
+  .item{padding:.7rem .8rem}
+  .item__txt{min-width:130px}
+  .cartao{padding:1.05rem}
+  .painel-grid{gap:1rem}
+  .ultima-faixa{padding:1.1rem;border-radius:16px}
+  .card-empresa__capa,.card-produto__capa{height:150px}
+}
+@media(max-width:380px){
+  h1{font-size:1.55rem}
+  .btn{padding:.62rem 1rem;font-size:.9rem}
+  .busca__filtros{grid-template-columns:1fr 1fr}
+  .card-empresa__capa,.card-produto__capa{height:130px}
+}
+/* impede qualquer estouro horizontal em listas/tabelas */
+.lista,.item,.grade,.numeros,.rodape__grid{max-width:100%}
+
+@media (prefers-reduced-motion:reduce){*{transition:none!important}html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="wrap nav__in">
+    <a class="nav__marca" data-rota="#/"><img src="assets/logo.jpg" alt="ReUse Brasil"> ReUse Brasil</a>
+    <div class="nav__links" id="navLinks">
+      <a data-rota="#/">Início</a>
+      <a data-rota="#/ofertas">Ofertas</a>
+      <a data-rota="#/empresas">Empresas</a>
+      <a data-rota="#/como-funciona">Como funciona</a>
+      <a data-rota="#/impacto">Impacto</a>
+      <a data-rota="#/ods12">ODS 12</a>
+    </div>
+    <div class="nav__acoes">
+      <button class="icone-botao" id="btnBuscaTopo" aria-label="Pesquisar" title="Pesquisar">🔍</button>
+      <button class="icone-botao" id="btnFavTopo" aria-label="Favoritos" title="Favoritos" data-rota="#/favoritos">❤️<span class="badge-contagem" id="contFav" hidden>0</span></button>
+      <button class="icone-botao" id="btnResTopo" aria-label="Reservas" title="Reservas/Carrinho" data-rota="#/reservas">🧾<span class="badge-contagem" id="contRes" hidden>0</span></button>
+      <button class="icone-botao" id="btnPerfilTopo" aria-label="Perfil" title="Perfil" data-rota="#/perfil">👤</button>
+      <a class="btn btn--peq" id="btnEntrar" data-rota="#/perfil">Entrar</a>
+    </div>
+  </div>
+</nav>
+
+<main id="app"></main>
+
+<dialog id="modal">
+  <div class="modal">
+    <h3 id="modalTitulo">Reserva realizada!</h3>
+    <p id="modalTexto"></p>
+    <p>Código da reserva: <span class="codigo" id="modalCodigo">—</span></p>
+    <p style="display:flex;gap:.6rem;margin-top:1.1rem;flex-wrap:wrap">
+      <button class="btn btn--peq" id="modalOk">Entendi</button>
+      <a class="btn btn--vazado btn--peq" data-rota="#/reservas" id="modalIrReservas">Ver minhas reservas</a>
+    </p>
+  </div>
+</dialog>
+
+<dialog id="modalContato">
+  <div class="modal">
+    <div class="modal__cab">
+      <div>
+        <h3>Fale com a loja</h3>
+        <p style="margin-top:.2rem">Sua mensagem vai direto para <span id="contatoLojaTag">a loja</span>.</p>
+      </div>
+      <button type="button" class="modal__fechar" id="btnFecharContato" aria-label="Fechar">✕</button>
+    </div>
+    <form id="formContato" novalidate>
+      <div class="campo"><label for="ctNome">Nome</label><input type="text" id="ctNome" required maxlength="80" placeholder="Seu nome" autocomplete="name"></div>
+      <div class="campo"><label for="ctEmail">Seu e-mail</label><input type="email" id="ctEmail" required maxlength="120" placeholder="voce@email.com" autocomplete="email"></div>
+      <div class="campo"><label for="ctMensagem">Mensagem</label><textarea id="ctMensagem" required maxlength="600" placeholder="Escreva sua mensagem para a loja..."></textarea></div>
+      <div class="campo campo-mel" aria-hidden="true"><label for="ctEmpresa2">Não preencher</label><input type="text" id="ctEmpresa2" name="ctEmpresa2" tabindex="-1" autocomplete="off"></div>
+      <button class="btn btn--bloco" type="submit" id="btnEnviarContato">Enviar mensagem</button>
+      <p class="aviso" id="avisoContato" role="status"></p>
+    </form>
+  </div>
+</dialog>
+
+<footer class="rodape">
+  <div class="wrap">
+    <h2>ReUse Brasil</h2>
+    <p style="max-width:60ch">Marketplace de alimentos excedentes que conecta empresas e consumidores para reduzir o desperdício de alimentos, em linha com o ODS 12 — Consumo e Produção Responsáveis.</p>
+    <div class="rodape__grid">
+      <div>
+        <h3 style="font-size:.95rem;margin-bottom:.5rem">Navegar</h3>
+        <a data-rota="#/ofertas">Ofertas</a>
+        <a data-rota="#/empresas">Empresas</a>
+        <a data-rota="#/ultima-chance">Última Chance</a>
+        <a data-rota="#/impacto">Impacto</a>
+      </div>
+      <div>
+        <h3 style="font-size:.95rem;margin-bottom:.5rem">Conta</h3>
+        <a data-rota="#/perfil">Meu perfil</a>
+        <a data-rota="#/reservas">Minhas reservas</a>
+        <a data-rota="#/favoritos">Favoritos</a>
+      </div>
+      <div>
+        <h3 style="font-size:.95rem;margin-bottom:.5rem">Para empresas</h3>
+        <a data-rota="#/cadastro-empresa">Cadastrar minha empresa</a>
+        <a data-rota="#/painel-empresa">Painel da empresa</a>
+      </div>
+      <div>
+        <h3 style="font-size:.95rem;margin-bottom:.5rem">Sobre</h3>
+        <a data-rota="#/como-funciona">Como funciona</a>
+        <a data-rota="#/ods12">ODS 12</a>
+      </div>
+    </div>
+    <div class="rodape__base">
+      <span>ReUse Brasil · boas escolhas, menos desperdício</span>
+      <span>Protótipo educativo — empresas, produtos e reservas são fictícios e ficam salvos apenas neste navegador</span>
+    </div>
+  </div>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
